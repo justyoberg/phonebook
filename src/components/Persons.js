@@ -1,12 +1,14 @@
-const Persons = ({ personsToShow }) =>{
-  console.log(personsToShow);
+const Persons = ({ personsToShow }) => {
+  if (!personsToShow) return
   return (
     <ul>
-      {personsToShow.map(person => {
-        return <li key={person.id}>{person.name} - {person.number}</li>
-      })}
+      {personsToShow.map((person) => (
+        <li key={person.id}>
+          {person.name} - {person.number}
+        </li>
+      ))}
     </ul>
-  )
-}
+  );
+};
 
-export default Persons
+export default Persons;
