@@ -16,11 +16,13 @@ const App = () => {
     });
   }, []);
 
-  const addName = (event) => {
+  const addEntry = (event) => {
     event.preventDefault();
 
     if (nameExists(newName)) {
-      alert(`${newName} is already added to phonebook`);
+      alert(`${newName} is already in the phonebook`);
+    } else if (numberExists(newNumber)) {
+      alert(`${newNumber} is already in the phonebook`);
     } else {
       const updatedBook = persons.concat({
         name: newName,
@@ -28,7 +30,12 @@ const App = () => {
       });
       setPersons(updatedBook);
       setNewName("");
+      setNewNumber("");
     }
+  };
+
+  const numberExists = (number) => {
+    return persons.find((person) => person.number === number);
   };
 
   const nameExists = (name) => {
@@ -58,7 +65,7 @@ const App = () => {
       <Filter value={filter} onChange={handleFilterChange} />
       <h1>Add a new person</h1>
       <PersonForm
-        addName={addName}
+        addEntry={addEntry}
         newName={newName}
         handleNewName={handleNewName}
         newNumber={newNumber}
