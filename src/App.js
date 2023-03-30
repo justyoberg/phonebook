@@ -11,34 +11,28 @@ const App = () => {
   const [newNumber, setNewNumber] = useState("");
 
   useEffect(() => {
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => {
-        setPersons(response.data)
-      })
-  }, [])
+    axios.get("http://localhost:3001/persons").then((response) => {
+      setPersons(response.data);
+    });
+  }, []);
 
   const addName = (event) => {
     event.preventDefault();
 
-    const newPerson = {
-      name: newName,
-      number: newNumber,
-    };
-
-    const exists = checkIfExists(newPerson);
-
-    if (exists) {
-      alert(`${newPerson.name} is already added to phonebook`);
+    if (nameExists(newName)) {
+      alert(`${newName} is already added to phonebook`);
     } else {
-      const updatedBook = persons.concat(newPerson);
+      const updatedBook = persons.concat({
+        name: newName,
+        number: newNumber,
+      });
       setPersons(updatedBook);
       setNewName("");
     }
   };
 
-  const checkIfExists = (personObj) => {
-    return persons.find((person) => person.name === personObj.name);
+  const nameExists = (name) => {
+    return persons.find((person) => person.name === name);
   };
 
   const handleNewName = (event) => {
