@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
 import Persons from "./components/Persons";
 import PersonForm from "./components/PersonForm";
 import Filter from "./components/Filter";
+import personService from "./services/personService";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -11,17 +11,18 @@ const App = () => {
   const [newNumber, setNewNumber] = useState("");
 
   useEffect(() => {
-    fetchPersons();
+    updatePersons();
   }, []);
 
-  const fetchPersons = () => {
-    axios.get("http://localhost:3001/persons").then((response) => {
-      setPersons(response.data);
-    });
+  const updatePersons = () => {
+    personService.getAll().then((response) => setPersons(response));
   };
 
   const postPerson = (person) => {
-    axios.post("http://localhost:3001/persons", person);
+    personService.create(person).then((response) => {
+      persons.concat(response);
+    });
+    updatePersons();
   };
 
   const addEntry = (event) => {
@@ -36,7 +37,6 @@ const App = () => {
         name: newName,
         number: newNumber,
       });
-      fetchPersons();
       setNewName("");
       setNewNumber("");
     }
@@ -59,7 +59,7 @@ const App = () => {
   };
 
   const handleFilterChange = (event) => {
-    setFilter(event.target.value);
+    setFilter(event.target.value.toLowerCase());
   };
 
   const personsToShow =
@@ -74,9 +74,9 @@ const App = () => {
 
   return (
     <div>
-      <h2>Phonebook</h2>
+      <h1>Phonebook</h1>
       <Filter value={filter} onChange={handleFilterChange} />
-      <h1>Add a new person</h1>
+      <h2>Add a new person</h2>
       <PersonForm
         addEntry={addEntry}
         newName={newName}

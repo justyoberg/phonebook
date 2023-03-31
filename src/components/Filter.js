@@ -1,5 +1,9 @@
 const Filter = ({ filter, onChange }) => {
-  return <input value={filter} onChange={onChange} />
+  return (
+  <div>
+    Search:<input value={filter} onChange={onChange} />
+  </div>
+  )
 }
 
 export default Filter
