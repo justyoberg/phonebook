@@ -11,10 +11,18 @@ const App = () => {
   const [newNumber, setNewNumber] = useState("");
 
   useEffect(() => {
+    fetchPersons();
+  }, []);
+
+  const fetchPersons = () => {
     axios.get("http://localhost:3001/persons").then((response) => {
       setPersons(response.data);
     });
-  }, []);
+  };
+
+  const postPerson = (person) => {
+    axios.post("http://localhost:3001/persons", person);
+  };
 
   const addEntry = (event) => {
     event.preventDefault();
@@ -24,11 +32,11 @@ const App = () => {
     } else if (numberExists(newNumber)) {
       alert(`${newNumber} is already in the phonebook`);
     } else {
-      const updatedBook = persons.concat({
+      postPerson({
         name: newName,
         number: newNumber,
       });
-      setPersons(updatedBook);
+      fetchPersons();
       setNewName("");
       setNewNumber("");
     }
@@ -57,7 +65,12 @@ const App = () => {
   const personsToShow =
     filter === ""
       ? persons
-      : persons.filter((person) => person.name.toLowerCase().includes(filter));
+      : persons.filter((person) => {
+          return (
+            person.name.toLowerCase().includes(filter) ||
+            person.number.includes(filter)
+          );
+        });
 
   return (
     <div>
