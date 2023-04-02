@@ -10,9 +10,7 @@ const App = () => {
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
 
-  useEffect(() => {
-    updatePersons();
-  }, []);
+  useEffect(() => updatePersons(), []);
 
   const updatePersons = () => {
     personService.getAll().then((data) => setPersons(data));
@@ -25,21 +23,33 @@ const App = () => {
     });
   };
 
+  const updatePersonEntry = (id, newEntry) => {
+    personService.update(id, newEntry).then(() => updatePersons());
+  };
+
   const addEntry = (event) => {
     event.preventDefault();
 
+    const newEntry = {
+      name: newName,
+      number: newNumber,
+    };
+
     if (nameExists(newName)) {
-      alert(`${newName} is already in the phonebook`);
+      const wantsUpdate = window.confirm(
+        `${newName} is already in the phonebook. Update with new number?`
+      );
+      if (wantsUpdate) {
+        const personId = nameExists(newName).id;
+        updatePersonEntry(personId, newEntry);
+      }
     } else if (numberExists(newNumber)) {
       alert(`${newNumber} is already in the phonebook`);
     } else {
-      postPerson({
-        name: newName,
-        number: newNumber,
-      });
-      setNewName("");
-      setNewNumber("");
+      postPerson(newEntry);
     }
+    setNewName("");
+    setNewNumber("");
   };
 
   const numberExists = (number) => {
