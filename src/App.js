@@ -34,9 +34,10 @@ const App = () => {
     const splitName = name.split(" ");
     return splitName
       .map((name) => {
-        return name.charAt(0).toUpperCase() + name.slice(1);
+        return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
       })
-      .join(" ");
+      .join(" ")
+      .trim();
   };
 
   const postPerson = (person) => {
@@ -48,23 +49,41 @@ const App = () => {
   };
 
   const updatePersonEntry = (id, newEntry) => {
-    personService.update(id, newEntry).then(() => updatePersons());
+    personService
+      .update(id, newEntry)
+      .then(() => {
+        updateMessage(
+          `${newEntry.name} was updated in the phonebook`,
+          "confirm",
+          true
+        );
+      })
+      .catch((error) => {
+        console.log(error);
+        updateMessage(
+          `${newEntry.name} was already deleted from the phonebook`,
+          "delete",
+          true
+        );
+      });
+    updatePersons();
   };
 
   const addEntry = (event) => {
     event.preventDefault();
+    const name = formatName(newName);
 
     const newEntry = {
-      name: formatName(newName),
+      name: name,
       number: newNumber,
     };
 
-    if (nameExists(newName)) {
+    if (nameExists(name)) {
       const wantsUpdate = window.confirm(
-        `${newName} is already in the phonebook. Update with new number?`
+        `${name} is already in the phonebook. Update with new number?`
       );
       if (wantsUpdate) {
-        const personId = nameExists(newName).id;
+        const personId = nameExists(name).id;
         updatePersonEntry(personId, newEntry);
       }
     } else if (numberExists(newNumber)) {
@@ -112,7 +131,6 @@ const App = () => {
   };
 
   const updateMessage = (msg = "", type = "", show = false) => {
-    window.clearTimeout();
     setMessage(msg);
     setMessageType(type);
     setShowMessage(show);
