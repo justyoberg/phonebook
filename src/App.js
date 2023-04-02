@@ -16,6 +16,15 @@ const App = () => {
     personService.getAll().then((data) => setPersons(data));
   };
 
+  const formatName = (name) => {
+    const splitName = name.split(" ");
+    return splitName
+      .map((name) => {
+        return name.charAt(0).toUpperCase() + name.slice(1);
+      })
+      .join(" ");
+  };
+
   const postPerson = (person) => {
     personService.create(person).then((data) => {
       persons.concat(data);
@@ -31,7 +40,7 @@ const App = () => {
     event.preventDefault();
 
     const newEntry = {
-      name: newName,
+      name: formatName(newName),
       number: newNumber,
     };
 
@@ -57,7 +66,10 @@ const App = () => {
   };
 
   const nameExists = (name) => {
-    return persons.find((person) => person.name === name);
+    return persons.find(
+      (person) =>
+        person.name.toString().toLowerCase() === name.toString().toLowerCase()
+    );
   };
 
   const handleNewName = (event) => {
