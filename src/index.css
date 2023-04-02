@@ -1,0 +1,15 @@
+.confirm {
+  border: 3px solid green;
+  border-radius: 5px;
+  background-color: rgb(186, 186, 186);
+  color: green;
+  padding: 10px;
+}
+
+.false {
+  display: none;
+}
+
+.true {
+  display: block;
+}

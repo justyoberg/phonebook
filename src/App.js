@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Persons from "./components/Persons";
 import PersonForm from "./components/PersonForm";
 import Filter from "./components/Filter";
+import Notification from "./components/Notification";
 import personService from "./services/personService";
 
 const App = () => {
@@ -9,6 +10,8 @@ const App = () => {
   const [filter, setFilter] = useState("");
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
+  const [message, setMessage] = useState("");
+  const [showMessage, setShowMessage] = useState(false);
 
   useEffect(() => updatePersons(), []);
 
@@ -29,6 +32,7 @@ const App = () => {
     personService.create(person).then((data) => {
       persons.concat(data);
       updatePersons();
+      updateMessage(`${person.name} was added to phonebook`);
     });
   };
 
@@ -88,6 +92,15 @@ const App = () => {
     personService.deletePerson(id).then(() => updatePersons());
   };
 
+  const updateMessage = (msg) => {
+    setMessage(msg);
+    setShowMessage(true);
+    setTimeout(() => {
+      setMessage(null);
+      setShowMessage(false);
+    }, 5000);
+  };
+
   const personsToShow =
     filter === ""
       ? persons
@@ -101,6 +114,7 @@ const App = () => {
   return (
     <div>
       <h1>Phonebook</h1>
+      <Notification message={message} shown={showMessage} />
       <Filter value={filter} onChange={handleFilterChange} />
       <h2>Add a new person</h2>
       <PersonForm
