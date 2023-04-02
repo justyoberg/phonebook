@@ -12,8 +12,19 @@ const App = () => {
   const [newNumber, setNewNumber] = useState("");
   const [message, setMessage] = useState("");
   const [showMessage, setShowMessage] = useState(false);
+  const [messageType, setMessageType] = useState("");
 
   useEffect(() => updatePersons(), []);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      updateMessage();
+    }, 5000);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [message]);
 
   const updatePersons = () => {
     personService.getAll().then((data) => setPersons(data));
@@ -32,7 +43,7 @@ const App = () => {
     personService.create(person).then((data) => {
       persons.concat(data);
       updatePersons();
-      updateMessage(`${person.name} was added to phonebook`);
+      updateMessage(`${person.name} was added to phonebook`, "confirm", true);
     });
   };
 
@@ -89,16 +100,22 @@ const App = () => {
   };
 
   const handleDeletion = (id) => {
-    personService.deletePerson(id).then(() => updatePersons());
+    personService.deletePerson(id).then(() => {
+      updatePersons();
+      const person = persons.find((person) => person.id === id);
+      updateMessage(
+        `${person.name} was deleted from phonebook`,
+        "delete",
+        true
+      );
+    });
   };
 
-  const updateMessage = (msg) => {
+  const updateMessage = (msg = "", type = "", show = false) => {
+    window.clearTimeout();
     setMessage(msg);
-    setShowMessage(true);
-    setTimeout(() => {
-      setMessage(null);
-      setShowMessage(false);
-    }, 5000);
+    setMessageType(type);
+    setShowMessage(show);
   };
 
   const personsToShow =
@@ -114,7 +131,7 @@ const App = () => {
   return (
     <div>
       <h1>Phonebook</h1>
-      <Notification message={message} shown={showMessage} />
+      <Notification message={message} shown={showMessage} type={messageType} />
       <Filter value={filter} onChange={handleFilterChange} />
       <h2>Add a new person</h2>
       <PersonForm

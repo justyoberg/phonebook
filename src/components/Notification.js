@@ -1,5 +1,5 @@
-const Notification = ({ message, shown }) => {
-  return <h3 className={`confirm ${shown}`}>{message}</h3>
+const Notification = ({ message, shown, type }) => {
+  return <h3 className={`${type} ${shown}`}>{message}</h3>
 }
 
 export default Notification

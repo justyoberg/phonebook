@@ -6,6 +6,14 @@
   padding: 10px;
 }
 
+.delete {
+  border: 3px solid red;
+  border-radius: 5px;
+  background-color: rgb(186, 186, 186);
+  color: red;
+  padding: 10px;
+}
+
 .false {
   display: none;
 }
