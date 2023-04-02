@@ -15,14 +15,14 @@ const App = () => {
   }, []);
 
   const updatePersons = () => {
-    personService.getAll().then((response) => setPersons(response));
+    personService.getAll().then((data) => setPersons(data));
   };
 
   const postPerson = (person) => {
-    personService.create(person).then((response) => {
-      persons.concat(response);
+    personService.create(person).then((data) => {
+      persons.concat(data);
+      updatePersons();
     });
-    updatePersons();
   };
 
   const addEntry = (event) => {
@@ -62,6 +62,10 @@ const App = () => {
     setFilter(event.target.value.toLowerCase());
   };
 
+  const handleDeletion = (id) => {
+    personService.deletePerson(id).then(() => updatePersons());
+  };
+
   const personsToShow =
     filter === ""
       ? persons
@@ -85,7 +89,7 @@ const App = () => {
         handleNewNumber={handleNewNumber}
       />
       <h2>Numbers</h2>
-      <Persons persons={personsToShow} />
+      <Persons persons={personsToShow} deletePerson={handleDeletion} />
     </div>
   );
 };
