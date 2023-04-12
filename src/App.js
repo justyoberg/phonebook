@@ -41,11 +41,16 @@ const App = () => {
   };
 
   const postPerson = (person) => {
-    personService.create(person).then((data) => {
-      persons.concat(data);
-      updatePersons();
-      updateMessage(`${person.name} was added to phonebook`, "confirm", true);
-    });
+    personService
+      .create(person)
+      .then((data) => {
+        persons.concat(data);
+        updatePersons();
+        updateMessage(`${person.name} was added to phonebook`, "confirm", true);
+      })
+      .catch(error => {
+        updateMessage(error.response.data.error, "delete", true)
+      })
   };
 
   const updatePersonEntry = (id, newEntry) => {
@@ -59,9 +64,8 @@ const App = () => {
         );
       })
       .catch((error) => {
-        console.log(error);
         updateMessage(
-          `${newEntry.name} was already deleted from the phonebook`,
+          error.response.data.error,
           "delete",
           true
         );
